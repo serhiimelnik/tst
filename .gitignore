@@ -1,0 +1,5 @@
+deps/
+tst.iml
+Mnesia.nonode@nohost/
+.applist
+ebin/

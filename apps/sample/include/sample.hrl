@@ -1,0 +1,15 @@
+-record('Auth', {token=[] :: [] | binary(),
+  dev_key=[] :: [] | binary(),
+  user_id=[] :: [] | binary(),
+  phone=[] :: [] | binary(),
+  client_id=[] :: [] | binary(),
+  type=[] :: reg | resend | voice
+  | verify | logout,
+  sms_code=[] :: [] | binary(),
+  attempts=[] :: [] | integer(),
+  services=[] :: list(atom()),
+  push=[] :: [] | binary(),
+  comments=[] :: [] | binary(),
+  os=[] :: [] | ios | android | web,
+  created = [] :: [] | integer() | binary(),
+  last_online = [] :: [] | integer() | binary()}).
