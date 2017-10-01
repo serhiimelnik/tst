@@ -20,5 +20,6 @@ event(logout) ->
   {ok, Auth} = kvs:get('Auth', n2o_session:session_id()),
   io:format("AUTH  LOGOUT:  ~p~n", [Auth]),
   kvs:delete('Auth', Auth#'Auth'.token),
+  wf:logout(),
   wf:redirect("/");
 event(E) -> wf:info(?MODULE,"Unknown Event: ~p~n",[E]).
