@@ -4,6 +4,7 @@
 
 %% API
 -export([reg/2, resend/1, verify/2]).
+-export([get_attempts/1]).
 
 reg(Token, Phone) ->
   io:format("Phone: ~p~n", [Phone]),
@@ -50,10 +51,13 @@ verify(Token, Code) ->
     _ -> {error,session_not_found}
   end.
 
+get_attempts(Token) ->
+  case kvs:get('Auth', Token) of
+    {ok, #'Auth'{attempts=Attempts}} -> Attempts;
+    {error, _}                       -> 0
+  end.
+
 update_attempts(#'Auth'{attempts=Attempts}=Auth) when Attempts > 0 ->
-  Attempts1 = Attempts - 1,
-  kvs:put(Auth#'Auth'{attempts=Attempts1}),
-  n2o_async:send("looper", Attempts1);
+  kvs:put(Auth#'Auth'{attempts=Attempts - 1});
 update_attempts(#'Auth'{token = Token}) ->
-  kvs:delete('Auth', Token),
-  wf:redirect("/").
+  kvs:delete('Auth', Token).

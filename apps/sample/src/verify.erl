@@ -23,6 +23,7 @@ event(init) ->
       wf:async("errorLoop",fun verify:error_loop/1),
       {ok, Auth} = kvs:get('Auth', n2o_session:session_id()),
       n2o_async:send("looper", Auth#'Auth'.attempts),
+      n2o_async:send("errorLoop", ""),
       ok
   end;
 event(resend) ->
@@ -35,7 +36,9 @@ event(verify) ->
   Code = wf:q(code),
   case sample_common:verify(n2o_session:session_id(), Code) of
     {ok,verifyed}             -> wf:redirect("/login");
-    {error,invalid_code}      -> n2o_async:send("errorLoop", "Error: Invalid code");
+    {error,invalid_code}      ->
+      n2o_async:send("looper", sample_common:get_attempts(n2o_session:session_id())),
+      n2o_async:send("errorLoop", "Error: Invalid code");
     {error,session_not_found} -> wf:redirect("/")
   end;
 event(E) -> wf:info(?MODULE,"Unknown Event: ~p~n",[E]).
