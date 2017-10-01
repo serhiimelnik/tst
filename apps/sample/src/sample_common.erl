@@ -3,15 +3,15 @@
 -include("sample.hrl").
 
 %% API
--export([reg/1]).
+-export([reg/2]).
 
-reg(Phone) ->
+reg(Token, Phone) ->
   io:format("Phone: ~p~n", [Phone]),
   wf:user(Phone),
   Code = rand:uniform(99999),
 
   kvs:put(#'Auth'{
-    token     = n2o_session:session_id(),
+    token     = Token,
     services  = [],
     type      = reg,
     phone     = Phone,
@@ -19,4 +19,6 @@ reg(Phone) ->
     attempts  = 3
   }),
 
-  Code.
+  io:format("AUTH REG SMS: ~p~n", [{Token, Code}]),
+
+  {ok,sms_sent}.

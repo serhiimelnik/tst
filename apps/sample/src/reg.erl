@@ -19,8 +19,7 @@ event(req) ->
     <<>>      -> wf:redirect("/");
     undefined -> wf:redirect("/");
     E         ->
-      Code = sample_common:reg(E),
-      io:format("AUTH REG SMS: ~p~n", [{n2o_session:session_id(), Code}]),
+      {ok,sms_sent} = sample_common:reg(n2o_session:session_id(), E),
       wf:redirect("/verify")
   end,
   ok;
